@@ -1,1 +1,3 @@
-# NodeJS_File_Handling
+# API endpoints
+https://guvi-nodejs-file-handling.herokuapp.com/createfile - to create the file with current timestamp 
+https://guvi-nodejs-file-handling.herokuapp.com/retrivefiles - to download all the created files
