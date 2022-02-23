@@ -22,6 +22,10 @@ app.get("/createfile", (req, res) => {
 
   let filename = `${year + month + date + "-" + hours + minutes + seconds}.txt`;
   try {
+    if (!fs.existsSync("./files"))
+      fs.mkdir("./files", { recursive: true }, (err) => {
+        console.log(err);
+      });
     fs.appendFile(`./files/${filename}`, timestamp.toString(), (err) => {
       if (err) {
         console.log(err);
@@ -35,25 +39,27 @@ app.get("/createfile", (req, res) => {
 });
 
 app.get("/retrivefiles", (req, res) => {
-  var fileDir = fs.readdirSync(`${__dirname}/files`);
-
   const zip = new AdmZip();
 
-  if (fileDir.length > 0) {
-    for (var i = 0; i < fileDir.length; i++) {
-      zip.addLocalFile(`${__dirname}/files/${fileDir[i]}`);
-    }
+  if (fs.existsSync("./files")) {
+    var fileDir = fs.readdirSync(`${__dirname}/files`);
 
-    const downloadName = `files.zip`;
+    if (fileDir.length > 0) {
+      for (var i = 0; i < fileDir.length; i++) {
+        zip.addLocalFile(`${__dirname}/files/${fileDir[i]}`);
+      }
 
-    const data = zip.toBuffer();
+      const downloadName = `files.zip`;
 
-    zip.writeZip(__dirname + "/" + downloadName);
+      const data = zip.toBuffer();
 
-    res.set("Content-Type", "application/octet-stream");
-    res.set("Content-Disposition", `attachment; filename=${downloadName}`);
-    res.set("Content-Length", data.length);
-    res.send(data);
+      zip.writeZip(__dirname + "/" + downloadName);
+
+      res.set("Content-Type", "application/octet-stream");
+      res.set("Content-Disposition", `attachment; filename=${downloadName}`);
+      res.set("Content-Length", data.length);
+      res.send(data);
+    } else res.json("No data to retrive");
   } else res.json("No data to retrive");
 });
 
