@@ -64,5 +64,5 @@ app.get("/retrivefiles", (req, res) => {
 });
 
 app.listen(process.env.PORT, () => {
-  console.log(`server running at port ${server.address().port}`);
+  console.log(`server running at port ${process.env.PORT}`);
 });
